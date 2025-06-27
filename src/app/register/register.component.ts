@@ -6,11 +6,11 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css',
+    selector: 'app-register',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './register.component.html',
+    standalone:true,
+    styleUrl: './register.component.css'
 })
 export class RegisterComponent {
   model: any = {};
@@ -28,7 +28,7 @@ export class RegisterComponent {
 
   onSubmit(form: any) {
     if (form.valid && this.model.password === this.model.confirmpassword) {
-      this.registerservice.Register(this.model).subscribe({
+      this.registerservice.register(this.model).subscribe({
         next: (response) => {
           console.log('Registration successful', response);
           // saving token on session

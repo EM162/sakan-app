@@ -1,49 +1,62 @@
-import { Component } from '@angular/core';
-import { Login } from '../core/models/Login';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { AuthService } from '../core/services/auth.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatFormFieldModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  model = {
-    email: '',
-    password: '',
-  };
-  apiError: string = '';
-  constructor(private loginservice: AuthService, private router: Router) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  onSubmit(registerForm: any) {
-    if (registerForm.valid) {
-      this.loginservice.Login(this.model).subscribe({
-        next: (response) => {
-          console.log('Login successful', response);
-          // Navigate to home page after successful login
-          sessionStorage.setItem('token', response.token);
-          console.log('Token saved to sessionStorage:', response.token);
+  model = { email: '', password: '' };
+  apiError = '';
+  isLoading = false;
+  returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/hometest';
 
-          this.router.navigateByUrl('hometest');
-        },
-        error: (error) => {
-          console.error('Login failed', error);
-          // Handle error, show message to user, etc.
-          this.apiError = error.error?.message;
-        },
-      });
-    }
+  onSubmit(form: any) {
+    if (form.invalid) return;
+
+    this.isLoading = true;
+    this.apiError = '';
+
+    this.authService.login(this.model).subscribe({
+      next: (response) => {
+        sessionStorage.setItem('token', response.token);
+        // this.router.navigateByUrl(this.returnUrl);
+        this.router.navigateByUrl('register'); 
+      },
+      error: (error) => {
+        this.apiError =
+          error.error?.message || 'Login failed. Please try again.';
+        this.isLoading = false;
+      },
+      complete: () => (this.isLoading = false),
+    });
   }
-  externalLogin() {
-    this.loginservice.initiateGoogleLogin();
 
-    this.router.navigateByUrl('hometest');
+  externalLogin() {
+    this.authService.initiateGoogleLogin();
+  }
+
+  clearError() {
+    this.apiError = '';
   }
 }

@@ -5,13 +5,19 @@ import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
-  SocialAuthServiceConfig,
-  GoogleLoginProvider,
-} from '@abacritt/angularx-social-login';
-// Material Dialog Configuration
-import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogConfig,
+} from '@angular/material/dialog';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { AuthService } from './core/services/auth.service';
+
+// Add these imports for Google OAuth
+import {
+  SocialAuthServiceConfig,
+  GoogleLoginProvider,
+  GoogleInitOptions,
+} from '@abacritt/angularx-social-login';
+import { environment } from '../app/environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,11 +35,32 @@ export const appConfig: ApplicationConfig = {
         disableClose: true,
         minWidth: '400px',
         panelClass: 'custom-dialog-container',
-      },
+      } as MatDialogConfig,
     },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline' },
+    },
+
+    // Google OAuth Configuration
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              environment.googleClientId, // From your environment.ts
+              {
+                oneTapEnabled: false,
+                prompt: 'select_account', // Force account selection
+                scopes: 'email profile', // Requested permissions
+              } as GoogleInitOptions
+            ),
+          },
+        ],
+      } as SocialAuthServiceConfig,
     },
 
     AuthService,

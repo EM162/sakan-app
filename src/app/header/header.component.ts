@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive],
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css',
+  
+    selector: 'app-header',
+    imports: [RouterLink, RouterLinkActive],
+    templateUrl: './header.component.html',
+    standalone: true,
+    styleUrl: './header.component.css'
 })
 export class HeaderComponent {
   constructor(private dialog: MatDialog) {}

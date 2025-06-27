@@ -1,49 +1,76 @@
 <div class="login-container">
   <form class="login-form" #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)" novalidate>
     <h2>Login</h2>
-      <div *ngIf="apiError" class="alert alert-danger">
-        {{ apiError }}
+    
+    <!-- Error Messages -->
+    <div *ngIf="apiError" class="alert alert-danger">
+      {{ apiError }}
+      <!-- <button type="button" class="close" (click)="apiError = ''">&times;</button> -->
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        name="email" 
+        placeholder="Enter your email"
+        required
+        email
+        [(ngModel)]="model.email"
+        #email="ngModel"
+        (input)="clearError()"
+        [class.is-invalid]="email.invalid && email.touched"
+      />
+      <div class="invalid-feedback" *ngIf="email.invalid && email.touched">
+        <span *ngIf="email.errors?.['required']">Email is required</span>
+        <span *ngIf="email.errors?.['email']">Enter a valid email</span>
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          name="Email"
-          placeholder="Enter your email"
-          required
-          email
-          [(ngModel)]="model.email"
-          #email="ngModel"
-        />
-        <div class="text-danger" *ngIf="email.invalid && email.touched">
-          Valid email is required.
-        </div>
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        name="password" 
+        placeholder="Enter your password"
+        required
+        minlength="6"
+        [(ngModel)]="model.password"
+        #password="ngModel"
+        (input)="clearError()"
+        [class.is-invalid]="password.invalid && password.touched"
+      />
+      <div class="invalid-feedback" *ngIf="password.invalid && password.touched">
+        <span *ngIf="password.errors?.['required']">Password is required</span>
+        <span *ngIf="password.errors?.['minlength']">
+          Minimum 6 characters required
+        </span>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          name="Password"
-          placeholder="Enter your password"
-          required
-          [(ngModel)]="model.password"
-          #password="ngModel"
-        />
-        <div class="text-danger" *ngIf="password.invalid && password.touched">
-          Password is required.
-        </div>
-      </div>
-      <button type="submit" class="login-btn" [disabled]="loginForm.invalid">
-        Login
-      </button>
-      <button type="button" class="login-btn google" (click)="externalLogin()">
-        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" style="width: 18px; vertical-align: middle; margin-right: 8px;">
-        Login with Google
-      </button>
-      <div class="register-link">
-        Don't have an account? <a routerLink="/register">Register</a>
-      </div>
-    </form>
-  </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="login-btn" [disabled]="loginForm.invalid || isLoading">
+      <span *ngIf="!isLoading">Login</span>
+      <span *ngIf="isLoading" class="spinner-border spinner-border-sm"></span>
+    </button>
+
+    <!-- Google Login -->
+    <button type="button" 
+            class="login-btn google" 
+            (click)="externalLogin()"
+            [disabled]="isLoading">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="google-icon">
+      Login with Google
+    </button>
+
+    <!-- Registration Link -->
+    <div class="register-link">
+      Don't have an account? 
+      <a routerLink="/register" [queryParams]="{returnUrl: returnUrl}">Register</a>
+    </div>
+  </form>
+</div>

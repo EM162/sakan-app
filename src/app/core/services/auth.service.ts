@@ -1,58 +1,120 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Register } from '../models/register';
-import { Observable } from 'rxjs';
-import { env } from 'process';
+import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, catchError, of, tap } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../environments/environment';
+import { Register } from '../models/register';
 import { Login } from '../models/Login';
-import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { Jwtpayloadd } from '../models/Jwtpayload';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
-@Injectable({
-  providedIn: 'root',
-})
+interface JwtPayload {
+  // Define your JWT claim types
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier': string;
+  'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private readonly httpclient: HttpClient) {}
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private socialAuthService = inject(SocialAuthService); // For Google OAuth
 
-  // generation register & Login services
+  // Token management
+  private tokenKey = 'token';
 
-  Register(register: Register): Observable<any> {
-    return this.httpclient.post<any>(
-      `${environment.apiurlauth}/register`,
-      register
-    );
+  constructor() {
+    this.setupGoogleAuthListener();
   }
+
+  // ========================
+  // GOOGLE OAUTH CONFIGURATION
+  // ========================
+  private setupGoogleAuthListener() {
+    this.socialAuthService.authState.subscribe((user: SocialUser) => {
+      if (user) {
+        this.handleGoogleToken(user.idToken);
+      }
+    });
+  }
+
   initiateGoogleLogin() {
-    // Store current route for redirect back after login
     localStorage.setItem('preAuthRoute', window.location.pathname);
-
-    // Redirect to Google auth endpoint
-    window.location.href = `${environment.googleAuthUrl}?returnUrl=${environment.googleCallbackUrl}`;
+    window.location.href = `${environment.apiurlauth}/externallogin/google`;
   }
 
-  handleGoogleCallback() {
-    // This would be called after returning from Google
+  private handleGoogleToken(idToken: string) {
+    this.http
+      .post(`${environment.apiurlauth}/sakanak`, { idToken })
+      .pipe(
+        tap((response: any) => {
+          this.storeToken(response.token);
+          this.router.navigateByUrl(this.handleGoogleCallback());
+        }),
+        catchError((error) => {
+          console.error('Google login failed', error);
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
+
+  handleGoogleCallback(): string {
     const returnUrl = localStorage.getItem('preAuthRoute') || '/';
     localStorage.removeItem('preAuthRoute');
     return returnUrl;
   }
-  Login(login: Login): Observable<any> {
-    return this.httpclient.post<any>(`${environment.apiurlauth}/Login`, login);
-  }
-  externalLogin() {
-    // This backend endpoint should initiate Google login (e.g. /signin-google)
-    window.location.href = `${environment.apiurlauth}/externallogin/google`;
+
+
+  register(registerData: Register): Observable<any> {
+    return this.http.post(`${environment.apiurlauth}/register`, registerData);
   }
 
-  getuserdata(): {
+  login(loginData: Login): Observable<any> {
+    return this.http.post(`${environment.apiurlauth}/login`, loginData).pipe(
+      tap((response: any) => {
+        this.storeToken(response.token);
+      })
+    );
+  }
+
+  logout() {
+    sessionStorage.removeItem(this.tokenKey);
+    this.socialAuthService.signOut();
+    this.router.navigate(['/login']);
+  }
+
+  // ========================
+  // TOKEN MANAGEMENT
+  // ========================
+  private storeToken(token: string) {
+    sessionStorage.setItem(this.tokenKey, token);
+  }
+
+  getToken(): string | null {
+    return sessionStorage.getItem(this.tokenKey);
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getToken();
+  }
+
+  // ========================
+  // USER DATA DECODING
+  // ========================
+  getUserData(): {
     name: string;
     email: string;
     id: string;
     role: string;
   } | null {
-    const token = sessionStorage.getItem('token');
-    if (token) {
-      const decoded: any = jwtDecode(token);
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
       return {
         name: decoded[
           'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'
@@ -68,7 +130,16 @@ export class AuthService {
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
         ],
       };
+    } catch (e) {
+      console.error('Token decoding failed', e);
+      return null;
     }
-    return null;
+  }
+
+  // ========================
+  // EXTERNAL LOGIN (LEGACY)
+  // ========================
+  externalLogin() {
+    window.location.href = `${environment.apiurlauth}/externallogin/google`;
   }
 }
