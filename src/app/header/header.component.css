@@ -12,6 +12,10 @@
     text-shadow: 0 2px 8px rgba(53,120,229,0.15);
   }
   
+  .nav-link.active {
+    font-weight: bold;
+    color: #3578e5 !important;
+  }
   .navbar-nav {
     display: flex;
     align-items: center;

@@ -31,11 +31,13 @@
         </li>
         <li class="flex-grow-1"></li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/login" routerLinkActive="active"
+          <!-- <a class="nav-link" routerLink="/login" routerLinkActive="active"
             >Login</a
-          >
-          <!-- <a class="nav-link" (click)="openLoginDialog()">Login</a> -->
-        </li>
+          > -->
+<!-- In your header.component.html -->
+<a class="nav-link" (click)="openLoginDialog()" [class.active]="dialogRef">
+  {{ dialogRef ? ' Login' : 'Login' }}
+</a>        </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/register" routerLinkActive="active"
             >Register</a

@@ -13,14 +13,27 @@ import { LoginComponent } from '../login/login.component';
 })
 export class HeaderComponent {
   constructor(private dialog: MatDialog) {}
+  public dialogRef: any;
 
   openLoginDialog() {
-    this.dialog.open(LoginComponent, {
-      width: '100%',
-      maxWidth: '400px',
-      panelClass: 'custom-dialog-container', // This matches our global class
-      backdropClass: 'cdk-overlay-dark-backdrop',
-      disableClose: true, // Optional - prevents closing by clicking outside
-    });
+    if (this.dialogRef) {
+      // If dialog is already open, close it
+      this.dialogRef.close();
+      this.dialogRef = null;
+    } else {
+      // Open new dialog
+      this.dialogRef = this.dialog.open(LoginComponent, {
+        width: '100%',
+        maxWidth: '400px',
+        panelClass: 'custom-dialog-container',
+        backdropClass: 'cdk-overlay-dark-backdrop',
+        disableClose: false, // Allow closing by clicking outside
+      });
+
+      // Handle dialog closing
+      this.dialogRef.afterClosed().subscribe(() => {
+        this.dialogRef = null;
+      });
+    }
   }
 }
