@@ -1,0 +1,39 @@
+<div class="dashboard-container">
+    <!-- Toggle Pills -->
+    <div class="toggle-container">
+      <div class="toggle-pills">
+        <button 
+          class="pill-button"
+          [class.active]="isTabSelected('today')"
+          (click)="selectTab('today')"
+          type="button"
+          aria-label="View today's requests">
+          Today
+        </button>
+        <button 
+          class="pill-button"
+          [class.active]="isTabSelected('upcoming')"
+          (click)="selectTab('upcoming')"
+          type="button"
+          aria-label="View upcoming requests">
+          Last Week
+        </button>
+      </div>
+    </div>
+  
+    <!-- Empty State Content -->
+    <div class="empty-state">
+      <!-- Notebook Illustration -->
+      <div class="illustration-container">
+        <div class="notebook-icon">
+          📔
+        </div>
+      </div>
+  
+      <!-- Empty State Message -->
+      <div class="message-container">
+        <h2 class="empty-message">You don't have any Requests</h2>
+        <p class="empty-subtitle">Your requests will appear here when guests make them</p>
+      </div>
+    </div>
+  </div>

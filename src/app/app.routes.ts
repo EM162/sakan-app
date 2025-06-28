@@ -7,6 +7,8 @@ import { RoomDetailsComponent } from './features/rooms/pages/room-details/room-d
 import { NotfoundComponent } from './shared/components/notfound/notfound.component';
 import { ChatComponent } from './features/chat/chat.component';
 import { CallbackComponent } from './callback/callback.component';
+import { HostLayoutComponent } from './host/host-layout/host-layout.component';
+import { DashboardComponent } from './host/dashboard/dashboard.component';
 import { AddApartmentComponent } from './features/listings/components/add-apartment/add-apartment.component';
 
 export const routes: Routes = [
@@ -16,6 +18,10 @@ export const routes: Routes = [
   { path: 'listing/:id', component:ListingDetailsComponent},
   { path: 'room/:id', component:RoomDetailsComponent},
   { path: 'chat', component: ChatComponent },
+  { path: 'host', component: HostLayoutComponent, children: [
+    { path: 'dashboard', component: DashboardComponent },
+    {path:'add-apartment',component:AddApartmentComponent},
+  ]},
   { path: '**', component: NotfoundComponent },
   { path: 'signin-google', component: CallbackComponent },
   {path:'add-apartment',component:AddApartmentComponent}

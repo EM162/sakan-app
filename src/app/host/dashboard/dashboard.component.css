@@ -1,0 +1,258 @@
+/* Dashboard Container */
+.dashboard-container {
+    min-height: 100vh;
+    background-color: #f6fafd;
+    padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  /* Toggle Container */
+  .toggle-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 64px;
+  }
+  
+  .toggle-pills {
+    display: inline-flex;
+    background-color: #e6ecf5;
+    border-radius: 32px;
+    padding: 4px;
+    gap: 2px;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.13);
+    border: 1px solid #e0e7ef;
+  }
+  
+  .pill-button {
+    padding: 12px 32px;
+    border: none;
+    border-radius: 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    color: #7b8794;
+    position: relative;
+    overflow: hidden;
+    min-width: 100px;
+    text-align: center;
+  }
+  
+  .pill-button:hover {
+    color: #31456e;
+    transform: translateY(-1px);
+  }
+  
+  .pill-button.active {
+    background: #f9f9fb;
+    color: #091c46;
+    box-shadow: 
+      0 4px 12px rgba(59, 130, 246, 0.13),
+      0 2px 4px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(59, 130, 246, 0.13);
+  }
+  
+  .pill-button:focus {
+    outline: 2px solid #a2c7f3;
+    outline-offset: 2px;
+  }
+  
+  /* Empty State */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 48px 24px;
+  }
+  
+  /* Illustration Container */
+  .illustration-container {
+    margin-bottom: 32px;
+    position: relative;
+  }
+  
+  .notebook-icon {
+    font-size: 96px;
+    line-height: 1;
+    filter: drop-shadow(0 8px 16px rgba(59, 130, 246, 0.13));
+    animation: float 3s ease-in-out infinite;
+    display: block;
+    transform-origin: center;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(1deg);
+    }
+  }
+  
+  /* Message Container */
+  .message-container {
+    max-width: 400px;
+  }
+  
+  .empty-message {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 16px 0;
+    line-height: 1.3;
+    letter-spacing: -0.5px;
+  }
+  
+  .empty-subtitle {
+    font-size: 16px;
+    color: #7b8794;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .dashboard-container {
+      padding: 20px 16px;
+    }
+  
+    .toggle-container {
+      margin-bottom: 48px;
+    }
+  
+    .toggle-pills {
+      width: 100%;
+      max-width: 320px;
+    }
+  
+    .pill-button {
+      padding: 10px 24px;
+      font-size: 14px;
+      min-width: 80px;
+    }
+  
+    .empty-state {
+      padding: 32px 16px;
+    }
+  
+    .notebook-icon {
+      font-size: 80px;
+    }
+  
+    .illustration-container {
+      margin-bottom: 24px;
+    }
+  
+    .empty-message {
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+  
+    .empty-subtitle {
+      font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .dashboard-container {
+      padding: 16px 12px;
+    }
+  
+    .toggle-pills {
+      padding: 3px;
+    }
+  
+    .pill-button {
+      padding: 8px 20px;
+      font-size: 13px;
+      min-width: 70px;
+    }
+  
+    .notebook-icon {
+      font-size: 64px;
+    }
+  
+    .empty-message {
+      font-size: 18px;
+    }
+  
+    .empty-subtitle {
+      font-size: 14px;
+    }
+  }
+  
+  /* Enhanced Interactions */
+  .pill-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(162, 199, 243, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+  }
+  
+  .pill-button:hover::before {
+    opacity: 1;
+  }
+  
+  .pill-button.active::before {
+    opacity: 0;
+  }
+  
+  /* Accessibility Improvements */
+  @media (prefers-reduced-motion: reduce) {
+    .notebook-icon {
+      animation: none;
+    }
+    
+    .pill-button {
+      transition: none;
+    }
+  }
+  
+  /* High Contrast Mode */
+  @media (prefers-contrast: high) {
+    .pill-button {
+      border: 2px solid #2d3748;
+    }
+    
+    .pill-button.active {
+      background: #091c46;
+      color: #f6fafd;
+    }
+    
+    .empty-message {
+      color: #000;
+    }
+    
+    .empty-subtitle {
+      color: #2d3748;
+    }
+  }
+  
+  /* Focus Visible for Better Accessibility */
+  .pill-button:focus-visible {
+    outline: 3px solid #a2c7f3;
+    outline-offset: 2px;
+  }
+  
+  /* Loading State (if needed) */
+  .pill-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .pill-button:disabled:hover {
+    transform: none;
+  }
