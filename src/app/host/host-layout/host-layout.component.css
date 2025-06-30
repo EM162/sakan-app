@@ -98,7 +98,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: calc(100vh - 110px);
+  height: calc(100vh - 160px);
+  /* height: 100%; */
 }
 
 .nav-list {
@@ -187,10 +188,10 @@
 /* Sidebar Footer */
 .sidebar-footer {
   padding: 0 18px 18px;
-  border-top: 1px solid #e3e8ee;
+  /* border-top: 1px solid #e3e8ee; */
   margin-top: 16px;
   padding-top: 16px;
-  background: rgba(255, 255, 255, 0.6);
+  /* background: rgba(255, 255, 255, 0.6); */
   border-bottom-right-radius: 24px;
 }
 

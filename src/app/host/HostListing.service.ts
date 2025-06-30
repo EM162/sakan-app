@@ -1,6 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import {jwtDecode} from 'jwt-decode';
+
+interface MyJwtPayload {
+  nameid: string;
+  [key: string]: any;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -10,46 +16,66 @@ export class HostListingService {
 
   constructor(private http: HttpClient) {}
 
-  // Helper method to set Authorization header
+  // Decode hostId (userId) from JWT in session storage
+private getHostIdFromToken(): string | null {
+  const token = sessionStorage.getItem('token');
+  if (!token) return null;
+
+  try {
+    const decoded = jwtDecode<any>(token);
+    const hostId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+    return hostId || null;
+  } catch (error) {
+    console.error("❌ Failed to decode JWT", error);
+    return null;
+  }
+}
+
+
   private getAuthHeaders(): HttpHeaders {
     const token = sessionStorage.getItem('token');
-    console.log("MY TOKEN", token);
     return new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
   }
 
-  // // Get all listings for the current host
-  // getMyListings(): Observable<any[]> {
-  //   return this.http.get<any[]>(`${this.apiUrl}/my`, {
-  //     headers: this.getAuthHeaders()
-  //   });
-  // }
+  // Get listings for current host
+  getMyListings(page: number, pageSize: number, searchTerm: string = ''): Observable<any> {
+    const hostId = this.getHostIdFromToken();  
+    const headers = this.getAuthHeaders();
 
-    getMyListings(page = 1, pageSize = 5): Observable<any> {
-      return this.http.get<any>(`${this.apiUrl}/my?page=${page}&pageSize=${pageSize}`, {
-        headers: this.getAuthHeaders()
-      });
-    }
+    const params = {
+      hostId: hostId ?? '',
+      page: page.toString(),
+      pageSize: pageSize.toString(),
+      search: searchTerm
+    };
 
-  // Get a specific listing by ID
+    return this.http.get<{ listings: any[], totalCount: number }>(
+      `${this.apiUrl}/my`,
+      { headers, params }
+    );
+  }
+
   getListingById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/${id}`, {
+    const hostId = this.getHostIdFromToken();
+    return this.http.get<any>(`${this.apiUrl}/${id}?hostId=${hostId}`, {
       headers: this.getAuthHeaders()
     });
   }
 
-  // Update a listing
   updateListing(id: number, data: any): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, data, {
+    const hostId = this.getHostIdFromToken();
+    return this.http.put<void>(`${this.apiUrl}/${id}?hostId=${hostId}`, data, {
       headers: this.getAuthHeaders()
     });
   }
 
-  // Delete a listing
   deleteListing(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+    const hostId = this.getHostIdFromToken();
+    return this.http.delete<void>(`${this.apiUrl}/${id}?hostId=${hostId}`, {
       headers: this.getAuthHeaders()
     });
   }
+
 }

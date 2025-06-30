@@ -15,6 +15,9 @@ import { registerLocaleData } from '@angular/common';
 import localeAr from '@angular/common/locales/ar';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -26,6 +29,7 @@ registerLocaleData(localeAr);
   imports: [
     BrowserModule,
     FormsModule,
+    BrowserAnimationsModule,
     FlatpickrModule,
     HttpClientModule,
     CommonModule,
@@ -39,6 +43,16 @@ registerLocaleData(localeAr);
         useFactory: HttpLoaderFactory,
         deps: [HttpClient]
       }
+    }),
+     ToastrModule.forRoot({ // ✅ configure toastr here
+      positionClass: 'toast-top-center',
+      closeButton: true,
+      progressBar: true,
+      toastClass: 'ngx-toastr custom-toastr',
+      titleClass: 'custom-toastr-title',
+      messageClass: 'custom-toastr-message',
+      enableHtml: true,
+      timeOut: 3000
     }),
     AppRoutingModule,
   ],
