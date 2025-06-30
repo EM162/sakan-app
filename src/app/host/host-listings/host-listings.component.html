@@ -1,0 +1,70 @@
+<!-- Host Dashboard Content -->
+<div class="host-dashboard-container">
+  <h1 class="dashboard-title">My Listings</h1>
+  <p class="dashboard-subtitle">Manage your property listings and keep them up to date.</p>
+
+  <div class="table-container">
+    <table class="listing-table">
+      <thead>
+        <tr>
+          <th>Listing Name</th>
+          <th>Location</th>
+          <th>Image</th>
+          <th>Max Guests</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let listing of listings">
+          <td>{{ listing.title }}</td>
+          <td class="location">{{ listing.location }}</td>
+          <td>
+            <img [src]="listing.previewImage" class="preview-img" alt="listing image" />
+          </td>
+          <td>{{ listing.maxGuests }}</td>
+          <td>
+            <button class="action-button" (click)="viewListing(listing.id)" title="View Listing">
+              <span class="icon-view">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <ellipse cx="10" cy="10" rx="8" ry="5" stroke="#555" stroke-width="1.5" fill="#fff"/>
+                  <circle cx="10" cy="10" r="2" fill="#555"/>
+                </svg>
+              </span>
+            </button>
+            <button class="action-button edit" (click)="editListing(listing.id)" title="Edit Listing">
+              <span class="icon-edit">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M4 14.5V16h1.5l8.29-8.29-1.5-1.5L4 14.5z" fill="#fff" stroke="#1976d2" stroke-width="1"/>
+                  <path d="M13.71 5.04a1 1 0 0 1 1.41 0l.84.84a1 1 0 0 1 0 1.41l-1.13 1.13-2.25-2.25 1.13-1.13z" fill="#1976d2"/>
+                </svg>
+              </span>
+            </button>
+            <button class="action-button delete" (click)="deleteListing(listing.id)" title="Delete Listing">
+              <span class="icon-delete">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <rect x="5" y="7" width="10" height="8" rx="1" fill="#fff" stroke="#d32f2f" stroke-width="1"/>
+                  <rect x="8" y="9" width="1" height="4" fill="#d32f2f"/>
+                  <rect x="11" y="9" width="1" height="4" fill="#d32f2f"/>
+                  <path d="M7 7V5.5A1.5 1.5 0 0 1 8.5 4h3A1.5 1.5 0 0 1 13 5.5V7" stroke="#d32f2f" stroke-width="1"/>
+                </svg>
+              </span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="pagination-controls">
+      <button class="pagination-btn" (click)="prevPage()" [disabled]="page === 1">
+      <span>&laquo;</span>
+      </button>
+      <span class="pagination-info">
+      <strong>{{ page }}</strong> of <strong>{{ totalPages }}</strong>
+      </span>
+      <button class="pagination-btn" (click)="nextPage()" [disabled]="page * pageSize >= totalCount">
+      <span>&raquo;</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+

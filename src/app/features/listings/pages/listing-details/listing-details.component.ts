@@ -8,7 +8,6 @@ import { TranslationService } from '../../../../core/services/translation.servic
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
   standalone: true,
   imports: [CommonModule, TranslateModule, FormsModule, RouterModule ],
@@ -23,16 +22,15 @@ export class ListingDetailsComponent implements OnInit {
   // State
   moveIn: string = '';
   moveOut: string = '';
+  hostId: string = '';
+  translatedDesc: string = '';
+  translatedTitle: string = '';
   guests: number = 1;
   requestSent: boolean = false;
-  hostId: string = '';
   bookedMonths: { year: number; month: number }[] = [];
-  monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  currentYear = new Date().getFullYear();
   selectedMonths: { year: number; month: number }[] = [];
-
-  translatedTitle: string = '';
-  translatedDesc: string = '';
+  currentYear = new Date().getFullYear();
+  monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   // Map
   listingLatitude: number = 0;
@@ -68,49 +66,38 @@ export class ListingDetailsComponent implements OnInit {
     });
   }
 
-  get selectedRooms() {
-  return this.listing?.bedroomList?.filter(r => r.selected);
-}
-
-// switchLanguage() {
-//   const newLang = this.translate.currentLang === 'en' ? 'ar' : 'en';
-//   this.translate.use(newLang);
-//   document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-// }
-
-currentLang = localStorage.getItem('lang') || 'en';
-
-switchLanguage() {
-  this.currentLang = this.currentLang === 'en' ? 'ar' : 'en';
-  localStorage.setItem('lang', this.currentLang);
-  location.reload(); // reload to fetch translated data from backend
-}
-
-
-translateData() {
-  const lang = localStorage.getItem('lang') || 'en';
-
-  this.translationService.translate(this.listing.title, lang).subscribe(res => {
-    this.translatedTitle = res.translated;
-  });
-
-  this.translationService.translate(this.listing.description, lang).subscribe(res => {
-    this.translatedDesc = res.translated;
-  });
-}
-
+  //------------------------------------------------------
 
   // Guest controls
   increaseGuests() { this.guests++; }
   decreaseGuests() { this.guests = Math.max(1, this.guests - 1); }
-
-  goToRoom(roomId: number) {
-    this.router.navigate(['/room', roomId]);
-  }
-
   // Calendar controls
   nextYear() { this.currentYear++; }
   previousYear() { this.currentYear--; }
+
+  //------------------------------------------------------
+
+  // Translations
+  currentLang = localStorage.getItem('lang') || 'en';
+  switchLanguage() {
+    this.currentLang = this.currentLang === 'en' ? 'ar' : 'en';
+    localStorage.setItem('lang', this.currentLang);
+    location.reload(); // reload to fetch translated data from backend
+  }
+  translateData() {
+    const lang = localStorage.getItem('lang') || 'en';
+
+    this.translationService.translate(this.listing.title, lang).subscribe(res => {
+      this.translatedTitle = res.translated;
+    });
+
+    this.translationService.translate(this.listing.description, lang).subscribe(res => {
+      this.translatedDesc = res.translated;
+    });
+  }
+
+  //------------------------------------------------------
+  // Month selection (calendar)
 
   selectMonth(month: number) {
     const exists = this.selectedMonths.find(m => m.year === this.currentYear && m.month === month);
@@ -184,6 +171,8 @@ translateData() {
     return date.toLocaleString('default', { month: 'short', year: 'numeric' });
   }
 
+  //------------------------------------------------------
+
   // Map
   initMap(): void {
     const map = L.map('map').setView([this.listingLatitude, this.listingLongitude], 13);
@@ -194,6 +183,8 @@ translateData() {
       .bindPopup('Apartment location')
       .openPopup();
   }
+
+  //------------------------------------------------------
 
   // Room selection and cost
   get selectedRoomCount(): number {
@@ -220,6 +211,16 @@ translateData() {
   get allRoomsSelected(): boolean {
     return this.listing.bedroomList?.every(r => r.selected) || false;
   }
+
+  get selectedRooms() {
+    return this.listing?.bedroomList?.filter(r => r.selected);
+  }
+
+  goToRoom(roomId: number) {
+    this.router.navigate(['/room', roomId]);
+  }
+
+  //------------------------------------------------------
 
   // Booking
   sendBookingRequest(): void {

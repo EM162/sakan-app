@@ -1,0 +1,17 @@
+<!-- host-layout.component.html -->
+<nav class="navbar">
+  <div class="navbar-left">
+    <span class="navbar-logo">🏠 SakanHost</span>
+    <span class="navbar-title">Host Dashboard</span>
+  </div>
+  <div class="navbar-right">
+    <a routerLink="/host/dashboard" class="nav-link">Dashboard</a>
+    <a routerLink="/host/listings" class="nav-link active">My Listings</a>
+    <a routerLink="/host/requests" class="nav-link">Requests</a>
+    <a routerLink="/host/chat" class="nav-link">Chat</a>
+    <a routerLink="/host/rules" class="nav-link">Rules</a>
+  </div>
+</nav>
+
+<!-- Host page content -->
+<router-outlet></router-outlet>

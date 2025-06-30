@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChatConfirmationModalComponent } from './components/chat-confirmation-modal/chat-confirmation-modal.component';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { NoChatsComponent } from './components/app-no-chats/app-no-chats.component';
 
 @Component({
   selector: 'app-chat',
@@ -53,11 +54,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       console.log('Chat confirmation cancelled');
       return;
     }
-
-    this.currentUserId = this.authService
-      .getUserIdFromToken()
-      ?.toString()
-      .trim();
+  
+    this.currentUserId = this.authService.getUserIdFromToken()?.toString().trim();
     this.chatHubService.startConnection(this.currentUserId);
 
     this.chatHubService.connectionStatus$.subscribe((connected) => {
@@ -82,16 +80,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.chatService.getUserChats(this.currentUserId).subscribe({
       next: async (chats) => {
         this.chats = chats;
-
+  
         this.route.queryParams.subscribe(async (params) => {
           const hostId = params['hostId'];
           const listingId = params['listingId'];
-
-          this.currentUserId = this.authService
-            .getUserIdFromToken()
-            ?.toString()
-            .trim();
-
+        
+          this.currentUserId = this.authService.getUserIdFromToken()?.toString().trim();
+        
           if (hostId && listingId) {
             try {
               const chat = await this.chatService.createChatIfNotExists(
@@ -101,6 +96,7 @@ export class ChatComponent implements OnInit, OnDestroy {
               );
 
               if (chat) {
+                this.DisplayConfirmationDialog();
                 this.selectedChat = {
                   ...chat,
                   receiverID: hostId,
@@ -201,6 +197,24 @@ export class ChatComponent implements OnInit, OnDestroy {
     };
 
     await this.loadChatHistory(chat.chatId);
+  }
+
+  async DisplayNoChatsDialog(){
+    const dialogRef = this.dialog.open(NoChatsComponent);
+    const confirmed = await dialogRef.afterClosed().toPromise();
+    if (!confirmed) {
+      console.log('No chats confirmation cancelled');
+      return;
+    }
+  }
+
+  async DisplayConfirmationDialog() {
+    const dialogRef = this.dialog.open(ChatConfirmationModalComponent);
+    const confirmed = await dialogRef.afterClosed().toPromise();
+    if (!confirmed) {
+      console.log('Chat confirmation cancelled');
+      return;
+    }
   }
 
   private async loadChatHistory(chatId: number) {

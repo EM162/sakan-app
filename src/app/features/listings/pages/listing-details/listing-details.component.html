@@ -29,7 +29,6 @@
           </div>
           <h3>{{ 'Hosted by ' | translate }} {{ listing.host.name }}</h3>
         </div>
-
       </div>
 
       <h3>{{ 'Description' | translate }}</h3>
@@ -65,10 +64,10 @@
       <p class="small-muted">{{ 'All utilities are included' | translate }}</p>
 
       <div class="price-breakdown">
-      <div class="row">
+      <!-- <div class="row">
         <span>{{ 'Average monthly rent' | translate }}</span>
         <span>£{{ listing.pricePerMonth }}</span>
-      </div>
+      </div> -->
       <div class="row">
         <span>{{ 'Selected room(s) total' | translate }}</span>
         <span>£{{ selectedRoomsTotal }}</span>
@@ -87,10 +86,6 @@
       </div>
 
     </div>
-
-
-      <!-- <button class="book-now" (click)="sendBookingRequest()">Send Request</button> -->
-       <!-- Booking Request or Chat Button -->
         <div class="text-center mt-3">
           <button *ngIf="!requestSent" (click)="sendBookingRequest()" class="book-now">{{ 'Send Booking Request' | translate }}</button>
 
@@ -103,8 +98,6 @@
           {{ 'Chat with Host' | translate }}
         </a>
         </div>
-
-
       <p class="notice">{{ 'When you book this apartment, your reservation will be confirmed instantly' | translate }}</p>
     </div>
 
@@ -140,16 +133,6 @@
 
  <br><hr /><br>
 
-  <!-- <h3 class="mt-5 mb-3">🛏 Bedrooms</h3>
-<div class="room-grid">
-  <div class="room-card" *ngFor="let room of listing.bedroomList" (click)="goToRoom(room.id)">
-    <img [src]="room.photos[0]" alt="Room Image" />
-    <div class="info">
-      <h4>{{ room.name }}</h4>
-      <p>£{{ room.pricePerNight ?? 'N/A' }} / night</p>
-    </div>
-  </div>
-</div> -->
 <h3 class="mt-5 mb-3">🛏 {{ 'Bedrooms' | translate }}</h3>
 <div class="room-grid">
   <div class="room-card" *ngFor="let room of listing.bedroomList">
@@ -157,7 +140,6 @@
     <div class="info">
       <h4>{{ room.name }}</h4>
       <p>£{{ room.pricePerNight ?? 'N/A' }} / {{ 'Month' | translate }}</p>
-      
       <div class="room-select">
         <label>
           <input type="checkbox" [(ngModel)]="room.selected" />

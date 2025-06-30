@@ -34,10 +34,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(),
     provideHttpClient(withFetch()),
-    provideAnimations(), // ✅ pick either provideAnimations() or provideAnimationsAsync()
+    provideAnimations(),
     { provide: LOCALE_ID, useValue: 'ar' },
-
-    // ✅ Imported Angular modules (required for standalone)
     importProvidersFrom(
       HttpClientModule,
       FormsModule,
@@ -52,8 +50,6 @@ export const appConfig: ApplicationConfig = {
         },
       })
     ),
-
-    // ✅ Angular Material default configurations
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useValue: {
@@ -67,8 +63,6 @@ export const appConfig: ApplicationConfig = {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: { appearance: 'outline' },
     },
-
-    // ✅ Core services
     AuthService,
   ],
 };

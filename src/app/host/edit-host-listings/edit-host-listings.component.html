@@ -1,0 +1,61 @@
+<div class="form-container">
+  <h2>Edit Listing</h2>
+  <form [formGroup]="listingForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label>Title</label>
+      <input formControlName="title" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea formControlName="description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Price Per Month</label>
+      <input type="number" formControlName="pricePerMonth" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>Max Guests</label>
+      <input type="number" formControlName="maxGuests" class="form-control" min="0"/>
+    </div>
+
+    <div class="form-group">
+      <label>Governorate</label>
+      <input formControlName="governorate" class="form-control" />
+    </div>
+
+    <div class="form-group">
+      <label>District</label>
+      <input formControlName="district" class="form-control" />
+    </div>
+
+    <!-- <div class="form-group">
+      <label>Existing Photos</label>
+      <div class="photo-preview-list">
+        <img *ngFor="let photo of listingForm.value.photoUrls" [src]="photo" class="preview-img" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>New Photo URLs (comma-separated)</label>
+      <textarea class="form-control" [(ngModel)]="photoInput"></textarea>
+      <button type="button" class="btn btn-secondary mt-2" (click)="updatePhotoUrls()">Update Photos</button>
+    </div> -->
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" formControlName="isBookableAsWhole" /> Bookable as Whole
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" formControlName="isActive" /> Is Active
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-success custom-update-btn">Update</button>
+  </form>
+</div>
