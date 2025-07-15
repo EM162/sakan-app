@@ -63,12 +63,22 @@ export class RoomDetailsComponent implements OnInit {
 
   // Calendar controls
   nextYear() { this.currentYear++; }
-  previousYear() { this.currentYear--; }
-
-  selectMonth(month: number) {
-  if (this.isMonthBooked(this.currentYear, month)) {
-    return; // Prevent selection
+   previousYear() {
+  const currentSystemYear = new Date().getFullYear();
+  if (this.currentYear > currentSystemYear) {
+    this.currentYear--;
   }
+}
+
+selectMonth(month: number) {
+  const now = new Date();
+  const isPastMonth = 
+    this.currentYear < now.getFullYear() ||
+    (this.currentYear === now.getFullYear() && month < now.getMonth() + 1);
+
+  if (isPastMonth) return; // 🚫 Don't allow selecting past months
+
+  if (this.isMonthBooked(this.currentYear, month)) return;
 
   const exists = this.selectedMonths.find(m => m.year === this.currentYear && m.month === month);
   if (exists) {
@@ -198,6 +208,7 @@ get selectedBedIds(): number[] {
 sendBookingRequest(): void {
   const selectedBeds = this.room.beds.filter(bed => bed.selected);
   const guestId = this.listingService.getCurrentUserId();
+
   if (!guestId) {
     Swal.fire('Error', 'You must be logged in to send a booking request.', 'error');
     return;
@@ -226,13 +237,18 @@ sendBookingRequest(): void {
     createdAt: new Date()
   };
 
-  this.listingService.createRequest(dto).subscribe(res => {
-    this.requestSent = true;
-    this.hostId = res.hostId;
-    Swal.fire('Success', 'Your request has been sent successfully!', 'success');
+  this.listingService.createRequest(dto).subscribe({
+    next: (res) => {
+      this.requestSent = true;
+      this.hostId = res.hostId;
+      Swal.fire('Success', 'Your request has been sent successfully!', 'success');
+    },
+    error: (err) => {
+      const msg = err?.error?.message || err?.error?.title || 'An unexpected error occurred while sending the request.';
+      Swal.fire('Request Error', msg, 'error');
+    }
   });
 }
-
 
 
 }

@@ -42,7 +42,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private router: Router,
     private toastr: ToastrService,
 
-  ) {}
+  ) { }
 
   scrollToBottom(): void {
     setTimeout(() => {
@@ -70,6 +70,8 @@ export class ChatComponent implements OnInit, OnDestroy {
   disableApproveButton: boolean = false;
 
 
+
+
   message: MessageDto = {
     senderID: '',
     receiverID: '',
@@ -80,16 +82,28 @@ export class ChatComponent implements OnInit, OnDestroy {
   async ngOnInit() {
 
     this.chatHubService.bookingRequest$
-    .pipe(takeUntil(this.destroy$))
-    .subscribe((data) => {
-      this.handleBookingNotification(data);
-    });
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        this.handleBookingNotification(data);
+      });
 
     this.currentUserId = this.authService
       .getUserIdFromToken()
       ?.toString()
       .trim();
     this.chatHubService.startConnection(this.currentUserId);
+
+    if (this.isHost()){
+    this.chatHubService.receivingNewChat$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        alert('You have a new message!');
+        console.log('Real-time: New chat notification received');
+        this.getChatsByUserId();
+      });
+    }
+
+
 
     this.chatHubService.connectionStatus$.subscribe((connected) => {
       this.isConnected = connected;
@@ -166,6 +180,9 @@ export class ChatComponent implements OnInit, OnDestroy {
                     queryParams: {},
                     replaceUrl: true,
                   });
+
+                  await this.chatHubService.invokeNotifyWhenChattingWithHost(this.selectedChat.receiverID);
+
                 }
               } catch (error) {
                 console.error('Error creating chat:', error);
@@ -422,7 +439,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
   async onApproveClick(selectedChat: ChatDto) {
     console.log('Approve Button Clicked, Approving Booking...');
-    
+
 
     const result = await this.DisplayApproveDialog();
     console.log(result, 'Dialog result');
@@ -449,7 +466,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         );
 
         console.log("Approval result:", approvalResult);
-        
+
         this.approvalStatus = approvalResult?.status;
         console.log('Approval status updated:', this.approvalStatus);
 
@@ -483,27 +500,26 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   handleBookingNotification(data: any) {
-    const message = `${data.approverName} ${
-      data.status === 'GoToPayment'
+    const message = `${data.approverName} ${data.status === 'GoToPayment'
         ? 'approved the booking, please proceed to payment.'
         : data.status === 'PendingHost'
-        ? 'approved the request. Waiting for host confirmation.'
-        : data.status === 'PendingGuest'
-        ? 'approved the request. Waiting for guest confirmation.'
-        : 'updated booking status.'
-    }`;
+          ? 'approved the request. Waiting for host confirmation.'
+          : data.status === 'PendingGuest'
+            ? 'approved the request. Waiting for guest confirmation.'
+            : 'updated booking status.'
+      }`;
 
     console.log("Real time From Chat Componenet. TS After Approve Booking", data);
-  
+
     this.approvalStatus = data.status;
     console.log('Booking status: From Chat Componenet', this.approvalStatus);
 
   }
-  
+
 
   shouldShowApproveButton(): boolean {
     if (!this.selectedChat) return false;
-  
+
     switch (this.approvalStatus) {
       case 'ApprovedByHost':
         return !this.isHost();
@@ -521,7 +537,7 @@ export class ChatComponent implements OnInit, OnDestroy {
         return true;
     }
   }
-  
+
   shouldDisableApproveButton(): boolean {
     switch (this.approvalStatus) {
       case 'ApprovedByHost':
@@ -540,10 +556,10 @@ export class ChatComponent implements OnInit, OnDestroy {
         return false;
     }
   }
-  
+
   async goToPayment() {
-     try {
-      if (!this.selectedChat) return; 
+    try {
+      if (!this.selectedChat) return;
 
       const guestId = this.GetGuestIdIfHost(this.selectedChat);
       const bookingId = await this.GetBookingId(this.selectedChat.chatId, guestId);
@@ -553,8 +569,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Go to payment failed:', error);
-      
-        this.toastr.error('Something went wrong. Please try again.');
+
+      this.toastr.error('Something went wrong. Please try again.');
     }
   }
 
@@ -612,5 +628,5 @@ export class ChatComponent implements OnInit, OnDestroy {
         return status || 'Unknown Status';
     }
   }
-  
+
 }

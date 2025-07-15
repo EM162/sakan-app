@@ -21,6 +21,9 @@ export class ChatHubService {
 
   private bookingRequestSubject = new Subject<any>();
   public bookingRequest$ = this.bookingRequestSubject.asObservable();
+
+  private receivingNewChatSubject = new Subject<void>();
+public receivingNewChat$ = this.receivingNewChatSubject.asObservable();
   
 
   /**
@@ -70,22 +73,11 @@ export class ChatHubService {
       this.showBookingStatusAlert(data);
     });
 
-    /* bject
-guestApproved
-: 
-true
-hostApproved
-: 
-false
-listingTitle
-: 
-"Mansoura Student Room"
-status
-: 
-"PendingHost"
-userName
-: 
-"guest1"*/
+   this.hubConnection.on('ReceivingNewChat', () => {
+  console.log('ReceivingNewChat event received');
+  this.receivingNewChatSubject.next();
+});
+
 
     this.isInitialized = true;
   }
@@ -186,4 +178,21 @@ userName
       timerProgressBar: true,
     });
   }
+
+  public async invokeNotifyWhenChattingWithHost(receiverId: string): Promise<void> {
+  if (!this.hubConnection) {
+    console.error('SignalR connection is not established.');
+    return;
+  }
+
+  try {
+    await this.hubConnection.invoke('NotifyWhenChattingWithHost', receiverId);
+    console.log(`NotifyWhenChattingWithHost invoked for receiverId: ${receiverId}`);
+  this.receivingNewChatSubject.next();
+
+  } catch (err) {
+    console.error('Error invoking NotifyWhenChattingWithHost:', err);
+  }
+}
+
 }

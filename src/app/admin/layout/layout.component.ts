@@ -22,7 +22,7 @@ export class LayoutComponent {
     { id: 'guests', label: 'Users', icon: 'people', route: '/admin/users' },
    // { id: 'hosts', label: 'Hosts', icon: 'person_pin', route: '/admin/hosts' },
     { id: 'listings-approval', label: 'Approve / Reject Listings', icon: 'approval', route: '/admin/approvelistings' },
-    { id: 'complaints', label: 'View & Manage Complaints', icon: 'report_problem', route: '/admin/complaints' },
+   //  { id: 'complaints', label: 'View & Manage Complaints', icon: 'report_problem', route: '/admin/complaints' },
     { id: 'listings', label: 'Listings Management', icon: 'home_work', route: '/admin/listings' },
     { id: 'Approve Hosts', label: 'Hosts Management', icon: 'person_pin', route: '/admin/approveHost' }
   ];

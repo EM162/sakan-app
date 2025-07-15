@@ -82,7 +82,7 @@ private getHostIdFromToken(): string | null {
   getHostBookings(): Observable<HostBooking[]> {
     const hostId = this.getHostIdFromToken();
     const headers = this.getAuthHeaders();
-    return this.http.get<HostBooking[]>(`https://localhost:7188/api/HostBooking/host/bookings?hostId=${hostId}`, { headers });
+    return this.http.get<HostBooking[]>(`https://localhost:7188/api/HostBooking/host/bookings/${hostId}`, { headers });
   }
 
 
