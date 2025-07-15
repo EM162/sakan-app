@@ -63,12 +63,22 @@ export class RoomDetailsComponent implements OnInit {
 
   // Calendar controls
   nextYear() { this.currentYear++; }
-  previousYear() { this.currentYear--; }
-
-  selectMonth(month: number) {
-  if (this.isMonthBooked(this.currentYear, month)) {
-    return; // Prevent selection
+   previousYear() {
+  const currentSystemYear = new Date().getFullYear();
+  if (this.currentYear > currentSystemYear) {
+    this.currentYear--;
   }
+}
+
+selectMonth(month: number) {
+  const now = new Date();
+  const isPastMonth = 
+    this.currentYear < now.getFullYear() ||
+    (this.currentYear === now.getFullYear() && month < now.getMonth() + 1);
+
+  if (isPastMonth) return; // 🚫 Don't allow selecting past months
+
+  if (this.isMonthBooked(this.currentYear, month)) return;
 
   const exists = this.selectedMonths.find(m => m.year === this.currentYear && m.month === month);
   if (exists) {

@@ -80,7 +80,13 @@ export class ListingDetailsComponent implements OnInit {
   increaseGuests() { this.guests++; }
   decreaseGuests() { this.guests = Math.max(1, this.guests - 1); }
   nextYear() { this.currentYear++; }
-  previousYear() { this.currentYear--; }
+  previousYear() {
+  const currentSystemYear = new Date().getFullYear();
+  if (this.currentYear > currentSystemYear) {
+    this.currentYear--;
+  }
+}
+
 
   currentLang = localStorage.getItem('lang') || 'en';
   switchLanguage() {
@@ -110,16 +116,26 @@ export class ListingDetailsComponent implements OnInit {
     this.selectedImage = null;
   }
 
-  selectMonth(month: number) {
-    if (this.isMonthBooked(this.currentYear, month)) return;
-    const exists = this.selectedMonths.find(m => m.year === this.currentYear && m.month === month);
-    if (exists) {
-      this.selectedMonths = this.selectedMonths.filter(m => !(m.year === this.currentYear && m.month === month));
-    } else {
-      this.selectedMonths.push({ year: this.currentYear, month });
-    }
-    this.updateMoveDatesFromSelection();
+selectMonth(month: number) {
+  const now = new Date();
+  const isPastMonth = 
+    this.currentYear < now.getFullYear() ||
+    (this.currentYear === now.getFullYear() && month < now.getMonth() + 1);
+
+  if (isPastMonth) return; // 🚫 Don't allow selecting past months
+
+  if (this.isMonthBooked(this.currentYear, month)) return;
+
+  const exists = this.selectedMonths.find(m => m.year === this.currentYear && m.month === month);
+  if (exists) {
+    this.selectedMonths = this.selectedMonths.filter(m => !(m.year === this.currentYear && m.month === month));
+  } else {
+    this.selectedMonths.push({ year: this.currentYear, month });
   }
+
+  this.updateMoveDatesFromSelection();
+}
+
 
   updateMoveDatesFromSelection() {
     if (this.selectedMonths.length === 0) {
