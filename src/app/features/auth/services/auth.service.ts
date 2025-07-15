@@ -61,7 +61,7 @@ export class AuthService {
   }) {
     const userid = this.getuserdata()?.id;
     return this.httpclient.post(
-      `${environment.apiurlauth}/change-password/${userid}`,
+      `${environment.apiurlauth}/change-password`,
       data
     );
   }

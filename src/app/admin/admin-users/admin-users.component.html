@@ -13,12 +13,13 @@
         <tr>
           <th>Name</th>
           <th>Email</th>
-          <th>Role</th>
+          <th>Phone Number</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let user of filteredUsers">
+        <tr *ngFor="let user of paginatedUsers">
           <td>
             <input *ngIf="editUser?.id === user.id" [(ngModel)]="editUserName" class="edit-input" />
             <span *ngIf="editUser?.id !== user.id">{{ user.userName }}</span>
@@ -27,21 +28,46 @@
             <input *ngIf="editUser?.id === user.id" [(ngModel)]="editEmail" class="edit-input" />
             <span *ngIf="editUser?.id !== user.id">{{ user.email }}</span>
           </td>
-          <td>{{ user.role }}</td>
+          <td>
+            <input *ngIf="editUser?.id === user.id" [(ngModel)]="editPhoneNumber" class="edit-input" />
+            <span *ngIf="editUser?.id !== user.id">{{ user.phoneNumber }}</span>
+          </td>
+          <td>
+            <span [ngClass]="{'status-active': !user.isDeleted, 'status-inactive': user.isDeleted}">
+              <i class="fas" [ngClass]="user.isDeleted ? 'fa-times-circle' : 'fa-check-circle'"></i>
+              {{ user.isDeleted ? 'inActive' : 'Active' }}
+            </span>
+          </td>
           <td>
             <div *ngIf="editUser?.id === user.id">
-              <button class="save-btn" (click)="saveEdit()">Save</button>
-              <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+              <button class="icon-btn save-btn" (click)="saveEdit()" title="Save">
+                <i class="fas fa-check"></i>
+              </button>
+              <button class="icon-btn cancel-btn" (click)="cancelEdit()" title="Cancel">
+                <i class="fas fa-times"></i>
+              </button>
             </div>
             <div *ngIf="editUser?.id !== user.id">
-              <button class="edit-btn" (click)="startEdit(user)">Edit</button>
-              <button class="delete-btn" (click)="deleteUser(user)">Delete</button>
+              <button class="icon-btn edit-btn" (click)="startEdit(user)" title="Edit">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button class="icon-btn delete-btn" (click)="deleteUser(user)" title="Delete">
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
     <div *ngIf="loading" class="loading-text">Loading...</div>
-    <div *ngIf="!loading && filteredUsers.length === 0" class="no-users-text">No users found.</div>
+    <div *ngIf="!loading && paginatedUsers.length === 0" class="no-users-text">No users found.</div>
+    <!-- Pagination Controls -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <button class="pagination-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">← Previous</button>
+      <span class="page-numbers">
+        <button *ngFor="let page of getPageNumbers()" class="page-btn" [class.active]="page === currentPage" (click)="changePage(page)">{{ page }}</button>
+      </span>
+      <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="changePage(currentPage + 1)">Next →</button>
+    </div>
   </div>
 </div>

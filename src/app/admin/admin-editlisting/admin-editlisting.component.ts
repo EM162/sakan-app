@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2'; 
-import { AdminListingService } from '../services/admin-listing.service';
+import { AdminListingService } from '../../Admin/services/admin-listing.service';
+// Uncomment the following line if you have a service for listing management
 // import { AdminListingService } from '../services/admin-listing.service';
 
 @Component({

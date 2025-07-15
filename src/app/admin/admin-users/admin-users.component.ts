@@ -19,7 +19,12 @@ export class AdminUsersComponent implements OnInit {
   editId='';
   editUserName = '';
   editEmail = '';
+  editPhoneNumber = '';
   loading = false;
+  currentPage = 1;
+  itemsPerPage = 8;
+  totalPages = 1;
+  paginatedUsers: AdminUserDto[] = [];
 
   constructor(private adminUsersService: AdminUsersService) {}
 
@@ -32,7 +37,6 @@ export class AdminUsersComponent implements OnInit {
     const obs = this.selectedRole === 'host' ? this.adminUsersService.getHosts() : this.adminUsersService.getGuests();
     obs.subscribe({
       next: users => {
-        console.log('Users from API:', users);
         this.users = users;
         this.applySearch();
         this.loading = false;
@@ -47,6 +51,25 @@ export class AdminUsersComponent implements OnInit {
       u.userName.toLowerCase().includes(term) ||
       u.email.toLowerCase().includes(term)
     );
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.filteredUsers.length / this.itemsPerPage) || 1;
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.paginatedUsers = this.filteredUsers.slice(start, end);
+  }
+
+  changePage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePagination();
+  }
+
+  getPageNumbers(): number[] {
+    return Array(this.totalPages).fill(0).map((_, i) => i + 1);
   }
 
   onSearchChange(): void {
@@ -61,15 +84,15 @@ export class AdminUsersComponent implements OnInit {
 
   startEdit(user: AdminUserDto): void {
     this.editUser = { ...user };
-    this.editId = user.id;
     this.editUserName = user.userName;
     this.editEmail = user.email;
+    this.editPhoneNumber = user.phoneNumber;
   }
 
   saveEdit(): void {
     if (!this.editUser) return;
     const userId = this.editUser.id;
-    this.adminUsersService.updateUser(userId, { id: this.editId, userName: this.editUserName, email: this.editEmail }).subscribe({
+    this.adminUsersService.updateUser(userId, { userName: this.editUserName, email: this.editEmail, phoneNumber: this.editPhoneNumber }).subscribe({
       next: () => {
         this.editUser = null;
         this.loadUsers();

@@ -6,7 +6,8 @@ export interface AdminUserDto {
   id: string;
   userName: string;
   email: string;
-  role: string;
+  phoneNumber: string;
+  isDeleted: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -30,8 +31,8 @@ export class AdminUsersService {
     return this.http.get<AdminUserDto[]>(`${this.apiUrl}/guests`, { headers: this.getAuthHeaders() });
   }
 
-  updateUser(userId: string, dto: {id:string; userName: string; email: string }): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${userId}`, dto, { headers: this.getAuthHeaders() });
+  updateUser(id: string, dto: { userName: string; email: string; phoneNumber: string }): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, { id, ...dto }, { headers: this.getAuthHeaders() });
   }
 
   deleteUser(userId: string): Observable<void> {

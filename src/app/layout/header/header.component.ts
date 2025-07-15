@@ -25,7 +25,7 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
     CommonModule,
     FormsModule,
     UserBookingRequestsComponent,
-    NotificationsComponent 
+    NotificationsComponent,
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
@@ -50,20 +50,25 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userid!: string;
   statusPopupMessage = '';
 
-  constructor(private authService: AuthService , private http:HttpClient, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
-      ngOnInit(): void {
-        this.loadHostStatus();
-        console.log('HOST STATUS:', this.hostStatus);
-        this.subscription = this.authService.isLoggedIn$.subscribe(status => {
-        this.isLoggedIn = status;
+  ngOnInit(): void {
+    this.loadHostStatus();
+    console.log('HOST STATUS:', this.hostStatus);
+    this.subscription = this.authService.isLoggedIn$.subscribe((status) => {
+      this.isLoggedIn = status;
 
       if (status) {
         const userData = this.authService.getuserdata();
         this.userid = this.authService.getuserdata()?.id || '';
         this.user = {
           name: userData?.name || 'Guest',
-          profilePictureUrl: 'https://www.transparentpng.com/download/user/gray-user-profile-icon-png-fP8Q1P.png'
+          profilePictureUrl:
+            'https://www.transparentpng.com/download/user/gray-user-profile-icon-png-fP8Q1P.png',
         };
       } else {
         this.user = {
@@ -136,7 +141,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
   }
 
-onBecomeHostClick(): void {
+  onBecomeHostClick(): void {
     const role = this.authService.getRoleFromToken();
     console.log('User role:', role);
 
@@ -158,10 +163,9 @@ onBecomeHostClick(): void {
           'info'
         );
       } else if (status === 'accepted') {
-        console.log('STATUS', status);
         const alreadyShown = localStorage.getItem('hostApprovedMessageShown');
 
-        if (alreadyShown !== 'true') {
+        if (!alreadyShown) {
           // First time approved → show message + logout
           Swal.fire(
             'Approved',
@@ -188,16 +192,12 @@ onBecomeHostClick(): void {
     }
   }
 
-
-
-getHostButtonLabel(): string {
-  const role = this.authService.getRoleFromToken();
-  if (role.includes('Admin')) return 'Admin Dashboard';
-  if (this.hostStatus === 'accepted') return 'Host Dashboard';
-  return 'Become a Host';
-}
-
-
+  getHostButtonLabel(): string {
+    const role = this.authService.getRoleFromToken();
+    if (role.includes('Admin')) return 'Admin Dashboard';
+    if (this.hostStatus === 'accepted') return 'Host Dashboard';
+    return 'Become a Host';
+  }
 
   confirmBecomeHost() {
     const userId = this.getCurrentUserId();

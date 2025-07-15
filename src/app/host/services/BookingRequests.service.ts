@@ -10,6 +10,7 @@ export interface BookingRequest {
   roomTitle: string;
   bedTitle: string;
   listingLocation: string;
+  createdAt: string;
   fromDate: string;
   toDate: string;
   isApproved: string; // Changed to string to match API response
@@ -26,7 +27,11 @@ export class BookingRequestsService {
     if (!token) return null;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || null;
+      return (
+        payload[
+          'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
+        ] || null
+      );
     } catch {
       return null;
     }
@@ -35,20 +40,23 @@ export class BookingRequestsService {
   private getAuthHeaders(): HttpHeaders {
     const token = sessionStorage.getItem('token');
     return new HttpHeaders({
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     });
   }
 
   getBookingRequests(): Observable<BookingRequest[]> {
     const hostId = this.getHostId();
     return this.http.get<BookingRequest[]>(`${this.apiUrl}/host/${hostId}`, {
-      headers: this.getAuthHeaders()
+      headers: this.getAuthHeaders(),
     });
   }
 
-  updateBookingRequest(requestId: number, isAccepted: boolean): Observable<any> {
-    return this.http.post(`${this.apiUrl}/update/${requestId}/${isAccepted}`,  {
-      headers: this.getAuthHeaders()
+  updateBookingRequest(
+    requestId: number,
+    isAccepted: boolean
+  ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/update/${requestId}/${isAccepted}`, {
+      headers: this.getAuthHeaders(),
     });
   }
 }

@@ -30,16 +30,16 @@ import { ForgetPasswordComponent } from './features/auth/forget-password/forget-
 import { HostGuard } from './guards/host.guard';
 import { AdminGuard } from './guards/admin.guard';
 import { ProfileComponent } from './features/auth/profile/components/profile/profile.component';
-import { LayoutComponent } from './admin/layout/layout.component';
-import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
-import { AdminListingsComponent } from './admin/admin-listings/admin-listings.component';
-import { AdminEditlistingComponent } from './admin/admin-editlisting/admin-editlisting.component';
-import { AdminHostsApproveComponent } from './admin/admin-hosts-approve/admin-hosts-approve.component';
-import { AdminApproveListingsComponent } from './admin/listing/listings.component';
+import { LayoutComponent } from '../app/Admin/layout/layout.component';
+import { AdminDashboardComponent } from '../app/Admin/admin-dashboard/admin-dashboard.component';
+import { AdminListingsComponent } from '../app/Admin/admin-listings/admin-listings.component';
+import { AdminEditlistingComponent } from '../app/Admin/admin-editlisting/admin-editlisting.component';
+import { AdminHostsApproveComponent } from '../app/Admin/admin-hosts-approve/admin-hosts-approve.component';
+import { AdminApproveListingsComponent } from '../app/Admin/listing/listings.component';
 import { CreateTicketComponent } from './features/support/components/create-ticket/create-ticket.component';
 import { TicketDetailsComponent } from './features/support/components/ticket-details/ticket-details.component';
 import { MyTicketsComponent } from './features/support/components/my-tickets/my-tickets.component';
-import { AdminUsersComponent } from './admin/admin-users/admin-users.component';
+import { AdminUsersComponent } from '../app/Admin/admin-users/admin-users.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomePageComponent },

@@ -38,16 +38,30 @@
   background: #f8fafc;
 }
 .users-table-container {
+  width: 100%;
   overflow-x: auto;
+  padding-bottom: 0;
 }
 .users-table {
   width: 100%;
+  min-width: 700px;
   border-collapse: separate;
   border-spacing: 0;
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+@media (max-width: 900px) {
+  .users-table {
+    min-width: 600px;
+  }
+}
+@media (max-width: 700px) {
+  .users-table {
+    min-width: 400px;
+    font-size: 0.95rem;
+  }
 }
 .users-table th,
 .users-table td {
@@ -79,6 +93,38 @@
   width: 100%;
   background: #f8fafc;
 }
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  margin: 0 2px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  border-radius: 5px;
+}
+.icon-btn.edit-btn { color: #3182ce; }
+.icon-btn.edit-btn:hover { background: #e3f0fa; }
+.icon-btn.save-btn { color: #38a169; }
+.icon-btn.save-btn:hover { background: #e6f9ed; }
+.icon-btn.cancel-btn { color: #a0aec0; }
+.icon-btn.cancel-btn:hover { background: #f1f5f9; }
+.icon-btn.delete-btn { color: #e53e3e; }
+.icon-btn.delete-btn:hover { background: #fde8e8; }
+.status-active {
+  color: #38a169;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-inactive {
+  color: #e53e3e;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 .edit-btn, .delete-btn, .save-btn, .cancel-btn {
   background: #0a7298;
   color: #fff;
@@ -106,6 +152,48 @@
 }
 .cancel-btn:hover {
   background: #718096;
+}
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0 0 0;
+  gap: 10px;
+}
+.pagination-btn {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2d3748;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.pagination-btn:disabled {
+  background: #f1f5f9;
+  color: #a0aec0;
+  cursor: not-allowed;
+}
+.page-numbers {
+  display: flex;
+  gap: 4px;
+}
+.page-btn {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2d3748;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.page-btn.active, .page-btn:hover {
+  background: #0a7298;
+  color: #fff;
 }
 .loading-text, .no-users-text {
   text-align: center;

@@ -1,10 +1,10 @@
-// تنسيقات عامة لخلايا ورأس الجدول
+
 .table-header {
   padding: 12px 16px;
   text-align: left;
   font-size: 12px;
   font-weight: 600;
-  color: #4a5568; // text-gray-700
+  color: #4a5568;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -13,37 +13,35 @@
   padding: 12px 16px;
   font-size: 14px;
   white-space: nowrap;
-  color: #2d3748; // text-gray-800
+  color: #2d3748;
 }
 
-// تنسيق شارات الحالة (Status Badges)
 .status-badge {
   display: inline-block;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
-  border-radius: 9999px; // rounded-full
+  border-radius: 9999px;
   text-transform: capitalize;
 }
 
-// ألوان مختلفة لكل حالة
 .status-open {
-  background-color: #e0e7ff; // indigo-100
-  color: #4338ca; // indigo-800
+  background-color: #e0e7ff;
+  color: #4338ca;
 }
 
-.status-inprogress, .status-in progress { // Handle space variation
-  background-color: #dbeafe; // blue-100
-  color: #1e40af; // blue-800
+.status-inprogress, .status-in progress {
+  background-color: #dbeafe;
+  color: #1e40af;
 }
 
 .status-resolved, .status-closed {
-  background-color: #d1fae5; // green-100
-  color: #065f46; // green-800
+  background-color: #d1fae5;
+  color: #065f46;
 }
 
 .status-pending {
-  background-color: #fef3c7; // amber-100
-  color: #92400e; // amber-800
+  background-color: #fef3c7;
+  color: #92400e;
 }
