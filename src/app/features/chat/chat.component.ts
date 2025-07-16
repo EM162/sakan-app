@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './services/chat.service';
-import { MessageDto } from '../../core/models/messageDto';
+import { BookingRQSDTO, CheckAvailabilityDto, MessageDto } from '../../core/models/messageDto';
 import { ChatHubService } from './services/chat-hub.service';
 import { ChatDto } from '../../core/models/chatDto';
 import { AuthService } from '../auth/services/auth.service';
@@ -20,7 +20,7 @@ import { NoChatsComponent } from './components/app-no-chats/app-no-chats.compone
 import { Router } from '@angular/router';
 import { ApproveConfirmationModalComponent } from './components/approve-confirmation-modal/approve-confirmation-modal';
 import { ToastrService } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-chat',
@@ -458,6 +458,20 @@ export class ChatComponent implements OnInit, OnDestroy {
 
         const isHost = this.isHost();
 
+        const isAvailable = await this.checkListingAvailability(bookingId);
+        console.log(isAvailable);
+        if (!isAvailable) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Not Available',
+            text: 'this listing is not Available in the current dates',
+            confirmButtonText: 'Okey'
+          });
+          return;
+        } else {
+          console.log('Available!');
+        }
+          
         const approvalResult = await this.chatService.approveBooking(
           selectedChat.chatId,
           bookingId,
@@ -629,4 +643,34 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  async checkListingAvailability(bookingId: number): Promise<boolean> {
+    try {
+      const bookingRQSDTO = await firstValueFrom(
+        this.chatService.getBookingRequestById(bookingId)
+      );
+  
+      if (!bookingRQSDTO.fromDate || !bookingRQSDTO.toDate) {
+        console.error('Missing fromDate or toDate');
+        return false;
+      }
+  
+      const checkDto: CheckAvailabilityDto = {
+        listingId: bookingRQSDTO.listingId,
+        roomId: bookingRQSDTO.roomId,
+        bedId: bookingRQSDTO.bedId,
+        fromDate: new Date(bookingRQSDTO.fromDate),
+        toDate: new Date(bookingRQSDTO.toDate)
+      };
+  
+      const result = await firstValueFrom(
+        this.chatService.checkAvailability(checkDto)
+      );
+  
+      return result.available;
+    } catch (err) {
+      console.error('Error:', err);
+      return false;
+    }
+  }
 }

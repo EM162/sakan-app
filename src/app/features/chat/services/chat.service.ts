@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { UserChatSummary } from '../../../core/models/messageDto';
+import { BookingRQSDTO, CheckAvailabilityDto, UserChatSummary } from '../../../core/models/messageDto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatService {
   private baseUrl = 'https://localhost:7188/api/chat';
+  private serverUrl = `https://localhost:7188/api`;
 
   constructor(private http: HttpClient) {}
 
@@ -60,5 +61,15 @@ export class ChatService {
   
     return this.http.get<any>(`${this.baseUrl}/approval-status`, { params });
   }
+
+  getBookingRequestById(id: number): Observable<BookingRQSDTO> {
+    return this.http.get<BookingRQSDTO>(`${this.serverUrl}/bookingrequest/${id}`);
+  }
+
+  checkAvailability(dto: CheckAvailabilityDto): Observable<{ available: boolean }> {
+    return this.http.post<{ available: boolean }>(`${this.serverUrl}/bookingservice/check-availability`, dto);
+  }
+  
+  
   
 }

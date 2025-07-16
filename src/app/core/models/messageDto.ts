@@ -15,3 +15,22 @@ export interface UserChatSummary {
   userName: string;
   lastMessage: MessageDto;
 }
+
+export interface BookingRQSDTO {
+  id: number;
+  guestId: string;
+  listingId?: number;
+  roomId?: number;
+  bedId?: number;
+  fromDate?: Date;
+  toDate?: Date;
+  isActive: boolean;
+}
+
+export interface CheckAvailabilityDto {
+  listingId?: number;
+  roomId?: number;
+  bedId?: number;
+  fromDate: Date;
+  toDate: Date;
+}
