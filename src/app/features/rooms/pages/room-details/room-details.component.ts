@@ -36,6 +36,8 @@ export class RoomDetailsComponent implements OnInit {
   // Map
   listingLatitude: number = 0;
   listingLongitude: number = 0;
+  listingId: number = 0;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -55,6 +57,14 @@ export class RoomDetailsComponent implements OnInit {
     this.roomService.getBookedMonths(id).subscribe(data => {
       this.bookedMonths = data;
     });
+
+    const listingIdFromQuery = this.route.snapshot.queryParamMap.get('listingId');
+  if (listingIdFromQuery) {
+    this.listingId = +listingIdFromQuery;
+    console.log('Listing ID from query:', this.listingId);
+  }
+
+  const roomId = +this.route.snapshot.paramMap.get('id')!;
   }
 
   // Guest controls
@@ -252,6 +262,21 @@ sendBookingRequest(): void {
 
 
 
+goToChat() {
+  console.log(this.hostId, this.listingId);
+  
+  if (!this.hostId || !this.listingId) {
+    console.warn('Missing hostId or listingId');
+    return;
+  }
+
+  this.router.navigate(['/chat'], {
+    queryParams: {
+      hostId: this.hostId,
+      listingId: this.listingId
+    }
+  });
+}
 
 }
 

@@ -69,7 +69,15 @@
       <div class="text-center mt-3">
           <button *ngIf="!requestSent" (click)="sendBookingRequest()" class="book-now">Send Booking Request</button>
 
-          <button *ngIf="requestSent" [routerLink]="['/chat']" class="book-now">Chat with Host</button>
+          <!-- <button *ngIf="requestSent" [routerLink]="['/chat']" class="book-now">Chat with Host</button> -->
+          <button
+          *ngIf="requestSent"
+          class="book-now"
+          (click)="goToChat()"
+        >
+          Chat with Host
+        </button>
+        
         </div>
     </div>
   </div> 

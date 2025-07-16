@@ -221,10 +221,11 @@ selectMonth(month: number) {
     return this.listing?.bedroomList?.filter(r => r.selected);
   }
 
-  goToRoom(roomId: number) {
-    this.router.navigate(['/room', roomId]);
+  goToRoom(roomId: number, listingId: number) {
+    this.router.navigate(['/room', roomId], {
+      queryParams: { listingId }
+    });
   }
-
   get allRoomsSelected(): boolean {
     const totalRooms = this.listing.bedroomList?.length || 0;
     const selectedRooms = this.listing.bedroomList?.filter(r => r.selected) || [];

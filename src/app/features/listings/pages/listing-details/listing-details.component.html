@@ -94,14 +94,15 @@
       <div class="text-center mt-3">
         <button *ngIf="!requestSent" (click)="sendBookingRequest()" class="book-now">Send Booking Request</button>
 
+        <!-- <button *ngIf="requestSent" [routerLink]="['/chat']" class="book-now">Chat with Host</button> -->
         <a
-          *ngIf="requestSent"
-          [routerLink]="['/chat']"
-          [queryParams]="{ hostId: hostId, listingId: listing.id }"
-          class="book-now"
-        >
-          Chat with Host
-        </a>
+        *ngIf="requestSent"
+        [routerLink]="['/chat']"
+        [queryParams]="{ hostId: hostId, listingId: listing.id }"
+        class="book-now"
+      >
+        Chat with Host
+      </a>
       </div>
       <p class="notice">When you book this apartment, your reservation will be confirmed instantly</p>
     </div>
@@ -142,7 +143,12 @@
   <h3 class="mt-5 mb-3">🛏 Bedrooms</h3>
   <div class="room-grid">
     <div class="room-card" *ngFor="let room of listing.bedroomList">
-      <img *ngIf="room.photos?.length" [src]="room.photos[0]" alt="Room Image" (click)="goToRoom(room.id)" />
+      <img
+  *ngIf="room.photos?.length"
+  [src]="room.photos[0]"
+  alt="Room Image"
+  (click)="goToRoom(room.id, listing.id)"
+/>
       <div class="info">
         <h4>{{ room.name }}</h4>
         <p>£{{ room.pricePerNight ?? 'N/A' }} / Month</p>
